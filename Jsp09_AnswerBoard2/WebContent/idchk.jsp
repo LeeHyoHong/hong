@@ -10,7 +10,7 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 
-<script type="text/javascript">
+<script type="text/javascript">g
 	
 	onload=function(){	//window.onload – 페이지 완전히 로딩후 처리하기위한 스크립트 (윈도우 로딩후)
 		var id = opener.document.getElementsByName("myid")[0].value;	//opener 객체는 자기 자신을 연 기존 창의 window객체를 참조
