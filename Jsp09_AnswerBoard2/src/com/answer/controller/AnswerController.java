@@ -102,10 +102,9 @@ public class AnswerController extends HttpServlet {
 			
 		} else if(command.equals("updateroleform")) {
 			int myno = Integer.parseInt(request.getParameter("myno"));
-			
-			
-			
-			
+			AnswerDto dto = dao.selectUser(myno);
+			request.setAttribute("dto", dto);
+			dispatch("updateroleform.jsp", request, response);
 			
 		} else if(command.equals("list")) {
 			List<AnswerDto> list = dao.selectAll();
