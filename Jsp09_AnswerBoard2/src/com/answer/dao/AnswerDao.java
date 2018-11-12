@@ -8,11 +8,99 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.answer.dto.AnswerDto;
-import com.sun.corba.se.spi.orbutil.fsm.Guard.Result;
-import com.answer.dto.AnswerDto;
 
 import common.JDBCTemplate;
 public class AnswerDao extends JDBCTemplate{
+	
+	/*
+	 * 관리자기능(ADMIN)
+	 * 1.회원 전체 정보 (탈퇴 회원 포함)
+	 * 2.가입된 회원(MYENABLED='Y')의 정보(탈퇴 회원 미포함)
+	 * 3.회원 등급 조정
+	 */
+	
+	public List<AnswerDto> userAll(){
+		Connection con = getConnection();
+		PreparedStatement pstm = null;
+		ResultSet rs = null;
+		List<AnswerDto> res = new ArrayList<AnswerDto>();
+		
+		String sql = " SELECT * FROM MYMEMBER ORDER BY MYNO DESC ";
+		
+		try {
+			pstm = con.prepareStatement(sql);
+			rs = pstm.executeQuery();
+			
+			while(rs.next()) {
+				AnswerDto dto = new AnswerDto();
+				dto.setMyno(rs.getInt(1));
+				dto.setMyid(rs.getString(2));
+				dto.setMypw(rs.getString(3));
+				dto.setMyname(rs.getString(4));
+				dto.setMyaddr(rs.getString(5));
+				dto.setMyphone(rs.getString(6));
+				dto.setMyemail(rs.getString(7));
+				dto.setMyenabled(rs.getString(8));
+				dto.setMyrole(rs.getString(9));
+				
+				res.add(dto);
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			close(rs);
+			close(pstm);
+			close(con);
+		}
+		
+		
+		return res;
+	}
+	
+		//가입된 회원(MYENABLED='Y')의 정보(탈퇴 회원 미포함)
+		public List<AnswerDto> selectEnabled(){
+			Connection con = getConnection();
+			PreparedStatement pstm = null;
+			ResultSet rs = null;
+			List<AnswerDto> res = new ArrayList<AnswerDto>();
+			
+			String sql = "SELECT * FROM MYMEMBER WHERE MYENABLED = 'Y' ORDER BY MYNO DESC";
+			
+			try {
+				pstm = con.prepareStatement(sql);
+				rs = pstm.executeQuery();
+				
+				while(rs.next()) {
+					AnswerDto dto = new AnswerDto();
+					dto.setMyno(rs.getInt(1));
+					dto.setMyid(rs.getString(2));
+					dto.setMypw(rs.getString(3));
+					dto.setMyname(rs.getString(4));
+					dto.setMyaddr(rs.getString(5));
+					dto.setMyphone(rs.getString(6));
+					dto.setMyemail(rs.getString(7));
+					dto.setMyenabled(rs.getString(8));
+					dto.setMyrole(rs.getString(9));
+					
+					res.add(dto);
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}finally {
+				close(rs);
+				close(pstm);
+				close(con);
+			}
+			
+			
+			return res;
+		}
+	
+	
+	
 
 		//로그인
 		public AnswerDto login(String id, String pw) {
@@ -86,6 +174,75 @@ public class AnswerDao extends JDBCTemplate{
 			
 			return res;
 		}
+		
+		//회원가입
+		public int insertUser(AnswerDto dto) {
+			Connection con = getConnection();
+			PreparedStatement pstm = null;
+			int res = 0;
+			
+			String sql = " INSERT INTO MYMEMBER VALUES(MYNOSEQ.NEXTVAL, ?, ?, ?, ?, ?, ?, 'Y','USER') ";
+			
+			try {
+				pstm = con.prepareStatement(sql);
+				pstm.setString(1, dto.getMyid());
+				pstm.setString(2, dto.getMypw());
+				pstm.setString(3, dto.getMyname());
+				pstm.setString(4, dto.getMyaddr());
+				pstm.setString(5, dto.getMyphone());
+				pstm.setString(6, dto.getMyemail());
+				
+				res = pstm.executeUpdate();
+				
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} finally {
+				close(pstm);
+				close(con);
+			}
+			return res;
+		}
+		
+		//내 정보 조회
+		public AnswerDto selectUser(int myno) {
+			Connection con = getConnection();
+			PreparedStatement pstm = null;
+			ResultSet rs = null;
+			AnswerDto res = new AnswerDto();
+			
+			String sql = "SELECT * FROM MYMEMBER WHERE MYNO = ?";
+			
+			try {
+				pstm = con.prepareStatement(sql);
+				pstm.setInt(1, myno);
+				
+				rs = pstm.executeQuery();
+				while(rs.next()) {
+					res.setMyno(rs.getInt(1));
+					res.setMyid(rs.getString(2));
+					res.setMypw(rs.getString(3));
+					res.setMyname(rs.getString(4));
+					res.setMyaddr(rs.getString(5));
+					res.setMyphone(rs.getString(6));
+					res.setMyemail(rs.getString(7));
+					res.setMyenabled(rs.getString(8));
+					res.setMyrole(rs.getString(9));
+				}
+				
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} finally {
+				close(rs);
+				close(pstm);
+				close(con);
+			}
+			return res;
+		}
+		
+		
+		
 		
 		
 	

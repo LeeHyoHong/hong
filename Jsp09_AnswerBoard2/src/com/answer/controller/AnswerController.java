@@ -57,6 +57,12 @@ public class AnswerController extends HttpServlet {
 				jsResponse("login 실패", "index.jsp", response);
 			}
 			
+		} else if(command.equals("userlistall")){
+			List<AnswerDto> list = dao.userAll();
+			request.setAttribute("list", list);
+			dispatch("userlistall.jsp", request, response);
+			
+			
 		} else if(command.equals("registform")) {
 			response.sendRedirect("registform.jsp");
 			
@@ -70,6 +76,36 @@ public class AnswerController extends HttpServlet {
 				idnotused = false;
 			}
 			response.sendRedirect("idchk.jsp?idnotused="+idnotused);
+			
+		} else if(command.equals("insertuser")) {
+			String myid = request.getParameter("myid");
+			String mypw = request.getParameter("mypw");
+			String myname = request.getParameter("mypw");
+			String myaddr = request.getParameter("myaddr");
+			String myphone = request.getParameter("myphone");
+			String myemail = request.getParameter("myemail");
+			
+			AnswerDto dto = new AnswerDto(myid, mypw, myname, myaddr, myphone,myemail);
+			int res = dao.insertUser(dto);
+			
+			if(res>0) {
+				jsResponse("회원가입 성공", "index.jsp", response);
+			} else {
+				jsResponse("회원가입 실패", "index.jsp", response);
+			}
+			
+			
+		} else if(command.equals("userlistenabled")) {
+			List<AnswerDto> list = dao.selectEnabled();
+			request.setAttribute("list", list);
+			dispatch("userlistenabled.jsp", request, response);
+			
+		} else if(command.equals("updateroleform")) {
+			int myno = Integer.parseInt(request.getParameter("myno"));
+			
+			
+			
+			
 			
 		} else if(command.equals("list")) {
 			List<AnswerDto> list = dao.selectAll();

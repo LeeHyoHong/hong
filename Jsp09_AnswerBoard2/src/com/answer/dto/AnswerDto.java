@@ -39,6 +39,17 @@ public class AnswerDto {
 		this.myenabled = myenabled;
 		this.myrole = myrole;
 	}
+	
+	//insert(회원 가입 myid, mypw, myname. myaddr, myphone, myemail)
+	public AnswerDto(String myid, String mypw, String myname, String myaddr, String myphone, String myemail) {
+		this.myid = myid;
+		this.mypw = mypw;
+		this.myname = myname;
+		this.myaddr = myaddr;
+		this.myphone = myphone;
+		this.myemail = myemail;
+	}
+	
 
 	//전체
 	public AnswerDto(int boardno, int groupno, int groupsq, int titletab, String title, String content, String writer,
